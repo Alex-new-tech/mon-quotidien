@@ -103,7 +103,7 @@ body {
 .tab.active { color: #fff; background: var(--accent-grad); box-shadow: 0 8px 20px -8px var(--accent-glow); }
 
 /* ===== Zone principale ===== */
-main { flex: 1; overflow: auto; padding: 26px 22px 40px; }
+main { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 26px 22px 40px; }
 .view { display: grid; gap: 18px; max-width: 1120px; margin: 0 auto; }
 #view-today { grid-template-columns: 1fr 1fr; }
 .events-today-panel, .journal-panel { grid-column: 1 / -1; }

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://djyfsbkedtngwpxfloel.supabase.co wss://djyfsbkedtngwpxfloel.supabase.co; style-src 'self'; script-src 'self'" />
+  <title>Mon Quotidien</title>
+  <meta name="theme-color" content="#6366f1" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="auth-overlay" class="auth-overlay hidden">
+    <div class="auth-card">
+      <div class="auth-logo">✓</div>
+      <h1>Mon Quotidien</h1>
+      <p class="auth-sub">Connecte-toi pour retrouver tes données sur tous tes appareils.</p>
+      <div id="auth-step-email">
+        <input id="auth-email" type="email" placeholder="ton@email.com" autocomplete="email" />
+        <button id="auth-send" class="auth-btn">Recevoir mon code</button>
+      </div>
+      <div id="auth-step-code" class="hidden">
+        <input id="auth-code" type="text" inputmode="numeric" autocomplete="one-time-code" placeholder="Code à 6 chiffres" />
+        <button id="auth-verify" class="auth-btn">Se connecter</button>
+        <button id="auth-back" class="auth-link">← changer d'e-mail</button>
+      </div>
+      <p id="auth-msg" class="auth-msg"></p>
+    </div>
+  </div>
+
+  <header class="topbar">
+    <div class="day-nav">
+      <button id="prev-day" class="icon-btn" title="Jour précédent">‹</button>
+      <div class="day-label">
+        <h1 id="current-day">Aujourd'hui</h1>
+        <p id="current-sub">…</p>
+      </div>
+      <button id="next-day" class="icon-btn" title="Jour suivant">›</button>
+      <button id="today-btn" class="ghost-btn">Aujourd'hui</button>
+    </div>
+    <div class="topbar-right">
+      <nav class="tabs">
+        <button class="tab active" data-view="today">📋 Aujourd'hui</button>
+        <button class="tab" data-view="week">📆 Semaine</button>
+        <button class="tab" data-view="calendar">📅 Calendrier</button>
+      </nav>
+      <button id="logout-btn" class="icon-btn hidden" title="Déconnexion">⎋</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- ===== Vue AUJOURD'HUI ===== -->
+    <section id="view-today" class="view">
+      <div class="panel hero-panel">
+        <div class="hero-ring">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <defs>
+              <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#6366f1" />
+                <stop offset="1" stop-color="#a855f7" />
+              </linearGradient>
+            </defs>
+            <circle class="ring-bg" cx="60" cy="60" r="52" fill="none" />
+            <circle class="ring-fg" id="ring-fg" cx="60" cy="60" r="52" fill="none" />
+          </svg>
+          <div class="hero-pct" id="hero-pct">0%</div>
+        </div>
+        <div class="hero-info">
+          <h2 id="hero-title">Ta journée</h2>
+          <div class="hero-stats">
+            <div class="stat"><span class="stat-ico">🔁</span><b id="stat-habits">0/0</b><span class="stat-lbl">habitudes</span></div>
+            <div class="stat"><span class="stat-ico">✅</span><b id="stat-tasks">0/0</b><span class="stat-lbl">tâches</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel sec-routine">
+        <h2>🔁 Routine</h2>
+        <ul id="habit-list" class="list"></ul>
+        <div class="add-row">
+          <input id="habit-input" type="text" placeholder="Nouvelle habitude…" />
+          <button id="add-habit" class="add-btn" title="Ajouter">+</button>
+        </div>
+      </div>
+
+      <div class="panel sec-tasks">
+        <h2>✅ À faire</h2>
+        <ul id="task-list" class="list"></ul>
+        <div class="add-row">
+          <input id="task-input" type="text" placeholder="Nouvelle tâche…" />
+          <input id="task-date" type="date" title="Échéance (optionnel)" />
+          <button id="add-task" class="add-btn" title="Ajouter">+</button>
+        </div>
+      </div>
+
+      <div class="panel events-today-panel">
+        <h2>📅 Rendez-vous</h2>
+        <ul id="today-event-list" class="list"></ul>
+      </div>
+
+      <div class="panel journal-panel">
+        <h2>📓 <span id="journal-title">Fait aujourd'hui</span></h2>
+        <textarea id="journal-text" placeholder="Qu'as-tu accompli aujourd'hui ?"></textarea>
+      </div>
+    </section>
+
+    <!-- ===== Vue SEMAINE ===== -->
+    <section id="view-week" class="view hidden">
+      <div class="panel week-panel">
+        <div class="cal-header">
+          <button id="week-prev" class="icon-btn" title="Semaine précédente">‹</button>
+          <h2 id="week-title">…</h2>
+          <button id="week-next" class="icon-btn" title="Semaine suivante">›</button>
+          <button id="week-today" class="ghost-btn">Cette semaine</button>
+        </div>
+        <p class="week-hint">Clique un jour pour son détail · clique un créneau vide pour ajouter un événement</p>
+        <div class="week-scroll">
+          <div id="week-grid" class="week-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Vue CALENDRIER ===== -->
+    <section id="view-calendar" class="view hidden">
+      <div class="panel calendar-panel">
+        <div class="cal-header">
+          <button id="cal-prev" class="icon-btn" title="Mois précédent">‹</button>
+          <h2 id="cal-title">…</h2>
+          <button id="cal-next" class="icon-btn" title="Mois suivant">›</button>
+        </div>
+        <div id="cal-grid" class="cal-grid"></div>
+        <div class="cal-legend">
+          <span><span class="lg-dot lg-ev"></span> Événement</span>
+          <span><span class="lg-dot lg-task"></span> Tâche</span>
+          <span><span class="lg-dot lg-note"></span> Note</span>
+        </div>
+      </div>
+
+      <div class="panel day-panel">
+        <h2 id="day-panel-title">…</h2>
+        <ul id="event-list" class="list"></ul>
+        <div class="add-row">
+          <input id="event-title" type="text" placeholder="Nouvel événement…" />
+          <input id="event-time" type="time" title="Heure (optionnel)" />
+          <button id="add-event" class="add-btn" title="Ajouter">+</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="vendor/supabase.js"></script>
+  <script src="storage-web.js"></script>
+  <script src="renderer.js"></script>
+  <script src="auth.js"></script>
+  <script src="pwa.js"></script>
+</body>
+</html>

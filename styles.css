@@ -435,7 +435,12 @@ input[type="date"], input[type="time"] { color-scheme: dark; }
 
 /* ===== Téléphone / petite tablette ===== */
 @media (max-width: 760px) {
-  .topbar { flex-direction: column; gap: 10px; padding: 12px; }
+  /* Défilement vertical naturel de TOUTE la page (rien n'est piégé dans une boîte) */
+  html { overflow-x: hidden; }
+  body { display: block; height: auto; min-height: 100vh; overflow: visible; }
+  main { overflow: visible; }
+  .week-scroll { max-height: none; overflow: visible; border: none; background: none; }
+  .topbar { flex-direction: column; gap: 10px; padding: 12px; position: sticky; top: 0; z-index: 50; }
   .day-nav { width: 100%; justify-content: center; }
   .day-label { width: auto; min-width: 120px; }
   .day-label h1 { font-size: 19px; }

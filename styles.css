@@ -369,6 +369,22 @@ input[type="date"], input[type="time"] { color-scheme: dark; }
 .wk-event-time { font-variant-numeric: tabular-nums; opacity: 0.85; margin-right: 3px; font-weight: 600; }
 .wk-input { width: 100%; font-size: 11px; padding: 4px 7px; border-radius: 6px; }
 
+/* ===== Vue Semaine — agenda (téléphone) ===== */
+.week-grid.agenda { display: block; min-width: 0; }
+.wk-day { display: flex; gap: 12px; padding: 11px 6px; border-bottom: 1px solid var(--stroke); }
+.wk-day:last-child { border-bottom: none; }
+.wk-day.today { background: rgba(124, 131, 255, 0.07); border-radius: 10px; }
+.wk-ag-head { flex-shrink: 0; width: 44px; text-align: center; cursor: pointer; padding-top: 2px; }
+.wk-ag-dow { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+.wk-ag-date { font-size: 19px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.wk-day.today .wk-ag-date { color: var(--accent); }
+.wk-ag-items { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 5px; }
+.wk-ag-item { font-size: 13px; padding: 6px 10px; border-radius: 8px; cursor: pointer; background: var(--glass); border: 1px solid var(--stroke); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wk-ag-item.ev { border-color: rgba(124, 131, 255, 0.25); }
+.wk-ag-item.ev b { color: var(--accent); font-variant-numeric: tabular-nums; margin-right: 2px; }
+.wk-ag-item.task { color: #6ee7b7; }
+.wk-ag-empty { color: var(--muted); font-size: 13px; padding: 6px 2px; }
+
 /* ===== Animations ===== */
 @keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 
@@ -447,7 +463,8 @@ input[type="date"], input[type="time"] { color-scheme: dark; }
   .add-row input[type="text"] { flex-basis: 100%; }
   .cal-header h2 { min-width: 0; font-size: 15px; }
   .cal-grid { gap: 5px; }
-  .week-grid { min-width: 580px; }      /* la semaine défile horizontalement */
+  .cal-header { flex-wrap: wrap; gap: 10px; }
+  .week-hint { display: none; }   /* l'agenda mobile se passe d'explication */
   .auth-overlay { padding: 14px; }
 }
 @media (prefers-reduced-motion: reduce) {

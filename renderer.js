@@ -415,7 +415,11 @@ function renderWeek() {
     ? `${weekStart.getDate()} – ${last.getDate()} ${MONTHS[last.getMonth()]} ${last.getFullYear()}`
     : `${weekStart.getDate()} ${MONTHS[weekStart.getMonth()]} – ${last.getDate()} ${MONTHS[last.getMonth()]} ${last.getFullYear()}`;
 
+  // Sur téléphone : agenda vertical (la grille ne tient pas).
+  if (window.matchMedia('(max-width: 760px)').matches) { renderWeekAgenda(days); return; }
+
   const grid = document.getElementById('week-grid');
+  grid.className = 'week-grid';
   grid.innerHTML = '';
   const todayStr = ymd(new Date());
 
@@ -513,6 +517,34 @@ function renderWeek() {
   }
   const editInput = grid.querySelector('.wk-input');
   if (editInput) editInput.focus();
+}
+
+// Vue Semaine version téléphone : un agenda vertical (un bloc par jour).
+function renderWeekAgenda(days) {
+  const grid = document.getElementById('week-grid');
+  grid.className = 'week-grid agenda';
+  grid.innerHTML = '';
+  const todayStr = ymd(new Date());
+  for (const d of days) {
+    const ds = ymd(d);
+    const block = document.createElement('div');
+    block.className = 'wk-day' + (ds === todayStr ? ' today' : '');
+    let items = '';
+    state.tasks.filter((t) => t.date === ds && !t.done).forEach((t) => {
+      items += `<div class="wk-ag-item task" data-drill="${ds}">✅ ${escapeHtml(t.title)}</div>`;
+    });
+    eventsForDay(ds).forEach((e) => {
+      items += `<div class="wk-ag-item ev" data-drill="${ds}">${e.time ? `<b>${e.time}</b> ` : ''}${escapeHtml(e.title)}</div>`;
+    });
+    if (!items) items = '<div class="wk-ag-empty">—</div>';
+    block.innerHTML = `
+      <div class="wk-ag-head" data-drill="${ds}">
+        <span class="wk-ag-dow">${WK_SHORT[d.getDay()]}</span>
+        <span class="wk-ag-date">${d.getDate()}</span>
+      </div>
+      <div class="wk-ag-items">${items}</div>`;
+    grid.appendChild(block);
+  }
 }
 
 // Cale la grille de la semaine sur le matin (≈ 7h) à l'ouverture/navigation.
@@ -816,6 +848,13 @@ function wireEvents() {
   const submitEvent = () => { addEvent(eventTitle.value, eventTime.value || null); eventTitle.value = ''; eventTime.value = ''; eventTitle.focus(); };
   eventTitle.addEventListener('keydown', (e) => { if (e.key === 'Enter') submitEvent(); });
   document.getElementById('add-event').onclick = submitEvent;
+
+  // Réadapter la vue Semaine au redimensionnement / rotation (grille <-> agenda)
+  let resizeTimer = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => { if (currentView === 'week') render(); }, 200);
+  });
 }
 
 // ---------- Démarrage ----------

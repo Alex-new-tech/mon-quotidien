@@ -183,6 +183,7 @@ main { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 26px 22px 40px; }
 }
 .habit:hover, .task:hover, .event:hover { background: var(--glass-2); border-color: var(--stroke-2); transform: translateX(2px); }
 .habit-name, .task-title, .event-title { flex: 1; word-break: break-word; }
+.row-end { display: contents; } /* transparent sur grand écran ; passe en 2e ligne sur mobile */
 .habit.done .habit-name, .task.done .task-title { color: var(--muted); text-decoration: line-through; }
 
 .check {
@@ -436,7 +437,14 @@ input[type="date"], input[type="time"] { color-scheme: dark; }
   .hero-info h2 { font-size: 16px; }
   .hero-stats { justify-content: center; }
 
-  .sched-chip { max-width: 118px; overflow: hidden; text-overflow: ellipsis; }
+  .sched-chip { max-width: 140px; overflow: hidden; text-overflow: ellipsis; }
+  /* Les habitudes/tâches passent leurs boutons de fin de ligne sur une 2e ligne */
+  .habit, .task { flex-wrap: wrap; }
+  .row-end { display: flex; align-items: center; gap: 8px; flex-basis: 100%; justify-content: flex-end; margin-top: 6px; }
+  .habit-name, .task-title { min-width: 0; }
+  /* Champs d'ajout empilés (l'input prend toute la largeur) */
+  .add-row { flex-wrap: wrap; }
+  .add-row input[type="text"] { flex-basis: 100%; }
   .cal-header h2 { min-width: 0; font-size: 15px; }
   .cal-grid { gap: 5px; }
   .week-grid { min-width: 580px; }      /* la semaine défile horizontalement */

@@ -259,9 +259,11 @@ function renderHabits() {
       ${editingItem && editingItem.type === 'habit' && editingItem.id === h.id
         ? `<input class="rename-input" data-rename="habit:${h.id}" value="${escapeHtml(h.name)}" />`
         : `<span class="habit-name" data-edithabit="${h.id}" title="Double-clic pour renommer">${escapeHtml(h.name)}</span>`}
-      <button class="sched-chip ${editingSchedule === h.id ? 'open' : ''}" data-sched="${h.id}" title="Programmer les jours">${scheduleLabel(h)}</button>
-      ${rightHtml}
-      <button class="del" data-del-habit="${h.id}" title="Supprimer">✕</button>`;
+      <div class="row-end">
+        <button class="sched-chip ${editingSchedule === h.id ? 'open' : ''}" data-sched="${h.id}" title="Programmer les jours">${scheduleLabel(h)}</button>
+        ${rightHtml}
+        <button class="del" data-del-habit="${h.id}" title="Supprimer">✕</button>
+      </div>`;
     list.appendChild(li);
     if (editingSchedule === h.id) list.appendChild(buildScheduleEditor(h));
   }
@@ -319,11 +321,13 @@ function renderTasks() {
       ${editingItem && editingItem.type === 'task' && editingItem.id === t.id
         ? `<input class="rename-input" data-rename="task:${t.id}" value="${escapeHtml(t.title)}" />`
         : `<span class="task-title" data-edittask="${t.id}" title="Double-clic pour renommer">${escapeHtml(t.title)}</span>`}
-      ${t.recur ? `<button class="recur-tag ${editingRecur === t.id ? 'on' : ''}" data-recur="${t.id}" title="Changer la récurrence">🔁 ${RECUR_LABEL[t.recur]}</button>` : ''}
-      ${t.date && t.date !== dateStr ? `<span class="task-date ${overdue ? 'overdue' : ''}">${overdue ? '⚠ ' : ''}${formatShort(t.date)}</span>` : ''}
-      <button class="task-act" data-postpone="${t.id}" title="Reporter à demain">↪</button>
-      ${t.recur ? '' : `<button class="task-act ${editingRecur === t.id ? 'on' : ''}" data-recur="${t.id}" title="Rendre récurrente">🔁</button>`}
-      <button class="del" data-del-task="${t.id}" title="Supprimer">✕</button>`;
+      <div class="row-end">
+        ${t.recur ? `<button class="recur-tag ${editingRecur === t.id ? 'on' : ''}" data-recur="${t.id}" title="Changer la récurrence">🔁 ${RECUR_LABEL[t.recur]}</button>` : ''}
+        ${t.date && t.date !== dateStr ? `<span class="task-date ${overdue ? 'overdue' : ''}">${overdue ? '⚠ ' : ''}${formatShort(t.date)}</span>` : ''}
+        <button class="task-act" data-postpone="${t.id}" title="Reporter à demain">↪</button>
+        ${t.recur ? '' : `<button class="task-act ${editingRecur === t.id ? 'on' : ''}" data-recur="${t.id}" title="Rendre récurrente">🔁</button>`}
+        <button class="del" data-del-task="${t.id}" title="Supprimer">✕</button>
+      </div>`;
     list.appendChild(li);
     if (editingRecur === t.id) list.appendChild(buildRecurEditor(t));
   }

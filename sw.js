@@ -1,5 +1,5 @@
 // ===== Service worker — cache de l'app pour l'usage hors-ligne =====
-const CACHE = 'mon-quotidien-v3';
+const CACHE = 'mon-quotidien-v4';
 const ASSETS = [
   '.',
   'index.html',
@@ -36,7 +36,7 @@ self.addEventListener('fetch', (e) => {
   const url = new URL(e.request.url);
   if (e.request.method !== 'GET' || url.origin !== location.origin) return;
   e.respondWith(
-    fetch(e.request)
+    fetch(e.request, { cache: 'no-cache' }) // revalide toujours -> les mises à jour arrivent
       .then((resp) => {
         const copy = resp.clone();
         caches.open(CACHE).then((c) => c.put(e.request, copy));
